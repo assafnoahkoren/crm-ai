@@ -8,6 +8,7 @@ import {
   leadStatusSchema,
 } from "@crm-ai/shared";
 import { logger } from "../lib/logger";
+import { onLeadStatusChange } from "../services/automations/engine";
 
 export const leadsRouter = router({
   list: protectedProcedure.input(leadFiltersInput).query(async ({ input, ctx }) => {
@@ -113,6 +114,16 @@ export const leadsRouter = router({
         { leadId: input.id, orgId: ctx.organizationId, status: input.status },
         "lead.status.changed",
       );
+
+      // Trigger automations in background
+      onLeadStatusChange({
+        leadId: input.id,
+        organizationId: ctx.organizationId!,
+        oldStatus: "", // We don't track old status here
+        newStatus: input.status,
+      }).catch((err) => {
+        logger.error({ error: String(err), leadId: input.id }, "automation.trigger.error");
+      });
 
       return prisma.lead.findUnique({ where: { id: input.id } });
     }),

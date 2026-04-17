@@ -8,6 +8,7 @@ import { AuthFlow } from "./features/auth/AuthFlow";
 import { LeadsPage } from "./features/leads/LeadsPage";
 import { KnowledgeBasePage } from "./features/knowledge-base/KnowledgeBasePage";
 import { ConversationsPage } from "./features/conversations/ConversationsPage";
+import { SettingsPage } from "./features/settings/SettingsPage";
 import { useTranslation } from "react-i18next";
 import "./lib/i18n";
 import "./styles/globals.css";
@@ -66,15 +67,6 @@ function DashboardPlaceholder() {
   );
 }
 
-function PlaceholderPage({ title }: { title: string }) {
-  return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">{title}</h2>
-      <p className="text-gray-500">Coming soon</p>
-    </div>
-  );
-}
-
 function AppContent() {
   const { t } = useTranslation();
   const { data: session, isPending } = useSession();
@@ -101,7 +93,7 @@ function AppContent() {
             <Route path="/leads" element={<LeadsPage />} />
             <Route path="/conversations" element={<ConversationsPage />} />
             <Route path="/knowledge-base" element={<KnowledgeBasePage />} />
-            <Route path="/settings" element={<PlaceholderPage title={t("nav.settings")} />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/leads" replace />} />
           </Routes>
         </main>
