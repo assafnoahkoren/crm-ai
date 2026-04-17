@@ -123,7 +123,15 @@ export function ConversationsPage() {
   const { t } = useTranslation();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
+  const filteredConversations = searchQuery
+    ? MOCK_CONVERSATIONS.filter(
+        (c) =>
+          c.leadName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.phone.includes(searchQuery),
+      )
+    : MOCK_CONVERSATIONS;
   const selected = MOCK_CONVERSATIONS.find((c) => c.id === selectedId);
   const messages = selectedId ? MOCK_MESSAGES[selectedId] || [] : [];
 
@@ -140,12 +148,14 @@ export function ConversationsPage() {
         <div className="p-3 border-b">
           <input
             type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t("common.search")}
             className="w-full px-3 py-2 border rounded-lg text-sm"
           />
         </div>
         <div className="flex-1 overflow-y-auto">
-          {MOCK_CONVERSATIONS.map((conv) => (
+          {filteredConversations.map((conv) => (
             <div
               key={conv.id}
               onClick={() => setSelectedId(conv.id)}

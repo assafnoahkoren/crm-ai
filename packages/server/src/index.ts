@@ -1,4 +1,5 @@
-import { createHTTPServer } from "@trpc/server/adapters/standalone";
+import { createServer } from "http";
+import { createHTTPHandler } from "@trpc/server/adapters/standalone";
 import cors from "cors";
 import { appRouter } from "./routers/app";
 import { createContext } from "./trpc";
@@ -17,90 +18,100 @@ function getClientIp(req: { headers: Record<string, string | string[] | undefine
   return "unknown";
 }
 
-const server = createHTTPServer({
+const corsMiddleware = cors();
+
+const trpcHandler = createHTTPHandler({
   router: appRouter,
   createContext,
-  middleware: cors(),
-  async onRequest(req, res) {
-    const url = new URL(req.url || "", `http://localhost:${PORT}`);
-    const ip = getClientIp(req);
+});
 
-    // Rate limit public endpoints (auth, webhooks)
-    if (
-      url.pathname.startsWith("/api/auth") ||
-      url.pathname === "/api/v1/leads/ingest" ||
-      url.pathname === "/api/webhooks/whatsapp"
-    ) {
-      const limit = checkRateLimit(`${ip}:${url.pathname}`, 60, 60000); // 60 req/min
-      if (!limit.allowed) {
-        res.writeHead(429, { "Content-Type": "application/json" });
-        res.end(
-          JSON.stringify({
-            error: "Too many requests",
-            retryAfter: Math.ceil((limit.resetAt - Date.now()) / 1000),
-          }),
-        );
-        return;
-      }
-    }
+const server = createServer(async (req, res) => {
+  // Apply CORS
+  await new Promise<void>((resolve) => {
+    corsMiddleware(req as any, res as any, resolve);
+  });
 
-    // Route /api/auth/* to Better Auth
-    if (url.pathname.startsWith("/api/auth")) {
-      const response = await auth.handler(req);
-      res.writeHead(response.status, Object.fromEntries(response.headers.entries()));
-      const body = await response.text();
-      res.end(body);
-      return;
-    }
+  const url = new URL(req.url || "", `http://localhost:${PORT}`);
+  const ip = getClientIp(req);
 
-    // Route /api/v1/leads/ingest to webhook handler
-    if (url.pathname === "/api/v1/leads/ingest") {
-      await handleLeadIngest(req, res);
-      return;
-    }
-
-    // WhatsApp webhook from green-api.com
-    if (url.pathname === "/api/webhooks/whatsapp") {
-      await handleWhatsAppWebhook(req, res);
-      return;
-    }
-
-    // Health check endpoints
-    if (url.pathname === "/api/health") {
-      res.writeHead(200, { "Content-Type": "application/json" });
+  // Rate limit public endpoints (auth, webhooks)
+  if (
+    url.pathname.startsWith("/api/auth") ||
+    url.pathname === "/api/v1/leads/ingest" ||
+    url.pathname === "/api/webhooks/whatsapp"
+  ) {
+    const limit = checkRateLimit(`${ip}:${url.pathname}`, 60, 60000); // 60 req/min
+    if (!limit.allowed) {
+      res.writeHead(429, { "Content-Type": "application/json" });
       res.end(
         JSON.stringify({
-          status: "ok",
-          timestamp: new Date().toISOString(),
-          uptime: process.uptime(),
+          error: "Too many requests",
+          retryAfter: Math.ceil((limit.resetAt - Date.now()) / 1000),
         }),
       );
       return;
     }
+  }
 
-    if (url.pathname === "/api/health/live") {
-      res.writeHead(200);
-      res.end("OK");
-      return;
-    }
+  // Route /api/auth/* to Better Auth
+  if (url.pathname.startsWith("/api/auth")) {
+    const response = await auth.handler(req);
+    res.writeHead(response.status, Object.fromEntries(response.headers.entries()));
+    const body = await response.text();
+    res.end(body);
+    return;
+  }
 
-    // Client error reporting
-    if (url.pathname === "/api/log/client-error" && req.method === "POST") {
-      let body = "";
-      for await (const chunk of req) {
-        body += chunk;
-      }
-      try {
-        const error = JSON.parse(body);
-        logger.error({ ...error, source: "client" }, "client.error");
-      } catch {
-        // Ignore malformed reports
-      }
-      res.writeHead(204);
-      res.end();
-      return;
+  // Route /api/v1/leads/ingest to webhook handler
+  if (url.pathname === "/api/v1/leads/ingest") {
+    await handleLeadIngest(req, res);
+    return;
+  }
+
+  // WhatsApp webhook from green-api.com
+  if (url.pathname === "/api/webhooks/whatsapp") {
+    await handleWhatsAppWebhook(req, res);
+    return;
+  }
+
+  // Health check endpoints
+  if (url.pathname === "/api/health") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        status: "ok",
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+      }),
+    );
+    return;
+  }
+
+  if (url.pathname === "/api/health/live") {
+    res.writeHead(200);
+    res.end("OK");
+    return;
+  }
+
+  // Client error reporting
+  if (url.pathname === "/api/log/client-error" && req.method === "POST") {
+    let body = "";
+    for await (const chunk of req) {
+      body += chunk;
     }
-  },
+    try {
+      const error = JSON.parse(body);
+      logger.error({ ...error, source: "client" }, "client.error");
+    } catch {
+      // Ignore malformed reports
+    }
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+
+  // All other routes go to tRPC
+  trpcHandler(req, res);
 });
 
 // Unhandled error handlers

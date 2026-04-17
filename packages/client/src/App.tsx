@@ -26,7 +26,7 @@ function Sidebar() {
   ];
 
   return (
-    <aside className="w-60 bg-white border-e border-gray-200 flex flex-col">
+    <aside className="hidden md:flex w-60 bg-white border-e border-gray-200 flex-col">
       <div className="p-4 border-b">
         <h1 className="text-lg font-bold">{t("app.name")}</h1>
       </div>

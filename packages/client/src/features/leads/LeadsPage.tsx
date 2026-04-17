@@ -1,5 +1,13 @@
 import { useState, useMemo } from "react";
-import { DndContext, DragEndEvent, DragOverEvent, pointerWithin } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverEvent,
+  pointerWithin,
+  useSensor,
+  useSensors,
+  PointerSensor,
+} from "@dnd-kit/core";
 import { useTranslation } from "react-i18next";
 import { LEAD_STATUSES } from "@crm-ai/shared";
 import type { Lead, LeadStatus } from "@crm-ai/shared";
@@ -125,6 +133,12 @@ export function LeadsPage() {
     }
   };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+  );
+
   const handleDragOver = (_event: DragOverEvent) => {
     // Could add visual feedback here
   };
@@ -156,6 +170,7 @@ export function LeadsPage() {
       {/* Kanban Board */}
       <div className="flex-1 overflow-x-auto p-4">
         <DndContext
+          sensors={sensors}
           collisionDetection={pointerWithin}
           onDragEnd={handleDragEnd}
           onDragOver={handleDragOver}
