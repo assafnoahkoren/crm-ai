@@ -2,19 +2,20 @@
 
 ## Current Phase: Phase 0 — Research & Planning
 ## Last Updated: 2026-04-17
-## Last Completed Task: PRD created, PROMPT.md created
+## Last Completed Task: Compiled RESEARCH.md with tRPC, Prisma/MongoDB, RAG, CRM, Micropay, shadcn/RTL findings
 
 ## Phase Checklist
 
 ### Phase 0: Research & Planning
 - [x] PRD written (PRD.md)
 - [x] Ralph Loop prompt created (PROMPT.md)
-- [ ] Research best practices (CRM, RAG, WhatsApp automation)
-- [ ] Fetch latest docs via context7 (React, tRPC, Prisma, shadcn, i18next, Better Auth)
-- [ ] Research green-api.com API shape
-- [ ] Research Micropay SMS API shape
-- [ ] Research Better Auth phone/OTP setup
-- [ ] Document findings in RESEARCH.md
+- [x] Research best practices (CRM kanban, RAG chunking strategy)
+- [x] Fetch latest docs via context7 (tRPC, Prisma/MongoDB)
+- [ ] Research green-api.com API shape (agent running)
+- [x] Research Micropay SMS API shape (verified & tested)
+- [ ] Research Better Auth phone/OTP setup (agent running)
+- [x] Document findings in RESEARCH.md (partial — green-api and Better Auth pending)
+- [ ] Complete RESEARCH.md with agent results
 - [ ] Create full task breakdown for all phases
 
 ### Phase 1: Project Scaffolding
@@ -29,11 +30,12 @@
 - [ ] Set up shadcn/ui + Tailwind
 - [ ] Smoke test
 
-### Phase 2–10: Not started
+### Phase 2–12: Not started
 
 ## Known Issues
 - None yet
 
 ## Notes for Next Iteration
-- Start with Phase 0: research external API docs and library best practices
-- PRD.md has all requirements — read it first
+- Two research agents (green-api.com, Better Auth) may have completed — check output files and update RESEARCH.md
+- After RESEARCH.md is complete, Phase 0 is done — commit and move to Phase 1
+- Micropay SMS API is tested and working (post=2, token auth)
