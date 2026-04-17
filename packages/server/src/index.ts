@@ -4,6 +4,7 @@ import { appRouter } from "./routers/app";
 import { createContext } from "./trpc";
 import { logger } from "./lib/logger";
 import { checkRateLimit } from "./lib/rate-limit";
+import { printStartupBanner } from "./lib/startup-banner";
 import { auth } from "./auth/auth";
 import { handleLeadIngest } from "./webhooks/lead-ingest";
 import { handleWhatsAppWebhook } from "./webhooks/whatsapp";
@@ -82,8 +83,35 @@ const server = createHTTPServer({
       res.end("OK");
       return;
     }
+
+    // Client error reporting
+    if (url.pathname === "/api/log/client-error" && req.method === "POST") {
+      let body = "";
+      for await (const chunk of req) {
+        body += chunk;
+      }
+      try {
+        const error = JSON.parse(body);
+        logger.error({ ...error, source: "client" }, "client.error");
+      } catch {
+        // Ignore malformed reports
+      }
+      res.writeHead(204);
+      res.end();
+      return;
+    }
   },
 });
 
+// Unhandled error handlers
+process.on("unhandledRejection", (err) => {
+  logger.fatal({ err }, "unhandled.rejection");
+});
+
+process.on("uncaughtException", (err) => {
+  logger.fatal({ err }, "uncaught.exception");
+  process.exit(1);
+});
+
 server.listen(PORT);
-logger.info({ port: PORT, env: process.env.NODE_ENV || "development" }, "CRM-AI server started");
+printStartupBanner(PORT);
