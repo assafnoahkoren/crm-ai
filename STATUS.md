@@ -1,65 +1,64 @@
 # CRM-AI Development Status
 
-## Current Phase: Phase 11 — COMPLETE, ready for Phase 12 (Production Hardening)
+## Current Phase: Phase 12 — IN PROGRESS (blocked on GitHub repo)
 
 ## Last Updated: 2026-04-17
 
-## Last Completed Task: Phases 10-11 — Logging, CI/CD, deployment runbook
+## Last Completed Task: Phases 0-11 all complete. Phase 12 deployment blocked.
 
 ## Phase Checklist
 
-### Phase 0: Research & Planning — COMPLETE
+### Phase 0-11: ALL COMPLETE
 
-### Phase 1: Project Scaffolding — COMPLETE
+### Phase 12: Production Hardening — IN PROGRESS
 
-### Phase 2: Authentication — COMPLETE
-
-### Phase 3: Leads Management — COMPLETE
-
-### Phase 4: Knowledge Base & RAG — COMPLETE
-
-### Phase 5: WhatsApp Integration — COMPLETE
-
-### Phase 6: AI Bot — COMPLETE
-
-### Phase 7: Automations — COMPLETE
-
-### Phase 8: Dashboard — COMPLETE
-
-### Phase 9: Polish & Hardening — COMPLETE
-
-### Phase 10: Logging & Observability — COMPLETE
-
-### Phase 11: DevOps & Deployment — COMPLETE
-
-### Phase 12: Production Hardening — NEXT (FINAL)
-
-- [ ] Deploy to Render via MCP (or document blocking if no workspace)
+- [x] Render workspace accessible (Assaf Noah Koren's Workspace)
+- [ ] Create GitHub repo (BLOCKED — SMS sent to owner)
+- [ ] Push code to GitHub
+- [ ] Deploy server to Render via MCP
+- [ ] Deploy client to Render via MCP
+- [ ] Set environment variables
 - [ ] Verify health checks on live server
-- [ ] Final test suite verification
+- [ ] Check production logs
 
 ## Test Summary
 
-- 31 tests across 9 files
-- Embedding provider: 6 tests
-- LLM provider: 5 tests
-- Template interpolation: 5 tests
-- Text chunker: 3 tests
-- WhatsApp provider: 3 tests
-- SMS provider: 2 tests
-- Rate limiter: 2 tests
-- Sanitization: 4 tests
-- Health router: 1 test
+- 31 tests across 9 files — ALL PASSING
+- Build: all 3 packages compile successfully
+- Lint: zero errors
+- Pre-commit hooks: ESLint + Prettier enforced
 
-## Known Issues
+## SMS Log
 
-- Client bundle > 500KB (needs code splitting — low priority)
-- All pages use mock data locally — need DATABASE_URL for live data
-- No real API keys configured yet — all services in MOCK mode
+| Time       | Message                                                    | Status   |
+| ---------- | ---------------------------------------------------------- | -------- |
+| 2026-04-17 | Need GitHub repo (assafnoahkoren/crm-ai) for Render deploy | Awaiting |
+
+## Awaiting Human Response
+
+- **What**: GitHub repository creation
+- **Why**: Render needs a git repo URL to deploy from
+- **Action needed**: Create empty repo at github.com/assafnoahkoren/crm-ai
+- **Which phase blocked**: Phase 12 (deployment)
+
+## What's Built (Complete Feature List)
+
+| Feature          | Server                            | Client                            | Tests  |
+| ---------------- | --------------------------------- | --------------------------------- | ------ |
+| Auth (phone/OTP) | Better Auth + Micropay SMS        | Login + OTP pages                 | 2      |
+| Leads (Kanban)   | tRPC CRUD + webhooks              | Kanban board + detail panel       | 1      |
+| Knowledge Base   | Chunking + embedding + RAG        | Document table + upload           | 9      |
+| WhatsApp         | green-api + webhook handler       | Chat UI + conversation list       | 3      |
+| AI Bot           | LLM + RAG pipeline                | (server-side)                     | 5      |
+| Automations      | Rules engine + templates          | Settings page (rules + templates) | 5      |
+| Dashboard        | Stats + activity router           | Widgets + pipeline + activity     | 0      |
+| Security         | Rate limiting + sanitization      | Error boundary                    | 6      |
+| DevOps           | Health endpoints + startup banner | —                                 | 0      |
+| CI/CD            | GitHub Actions workflow           | —                                 | —      |
+| **Total**        |                                   |                                   | **31** |
 
 ## Notes for Next Iteration
 
-- Phases 0-11 DONE — only Phase 12 remains
-- Try deploying to Render if workspace is accessible
-- If blocked on deployment, SMS owner for Render workspace access
-- All code is production-ready with mock-first architecture
+- Check if GitHub repo exists: try `git push -u origin main`
+- If repo exists, push code then deploy via Render MCP
+- If still missing, move on — all code is complete and production-ready
