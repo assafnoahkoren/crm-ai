@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { prisma } from "../db/client";
 import { logger } from "../lib/logger";
+import { handleBotResponse } from "../services/ai/bot";
 
 interface GreenApiWebhook {
   typeWebhook: string;
@@ -120,7 +121,16 @@ export async function handleWhatsAppWebhook(req: IncomingMessage, res: ServerRes
 
     logger.info({ conversationId: conversation.id, leadId: lead.id }, "whatsapp.message.stored");
 
-    // TODO: Phase 6 will add AI bot response here
+    // Trigger AI bot response in background
+    handleBotResponse({
+      conversationId: conversation.id,
+      organizationId: lead.organizationId,
+      leadId: lead.id,
+      chatId,
+      customerMessage: messageText,
+    }).catch((err) => {
+      logger.error({ error: String(err), conversationId: conversation.id }, "bot.response.error");
+    });
   } catch (error) {
     logger.error({ error: String(error), chatId }, "whatsapp.webhook.error");
   }
