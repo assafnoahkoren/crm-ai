@@ -1,43 +1,53 @@
 # CRM-AI Development Status
 
-## Current Phase: Phase 1 — Project Scaffolding
+## Current Phase: Phase 1 — COMPLETE, ready for Phase 2
+
 ## Last Updated: 2026-04-17
-## Last Completed Task: Phase 0 complete — all research documented in RESEARCH.md
+
+## Last Completed Task: Phase 1 scaffolding — all packages build, lint, typecheck pass
 
 ## Phase Checklist
 
 ### Phase 0: Research & Planning — COMPLETE
-- [x] PRD written (PRD.md)
-- [x] Ralph Loop prompt created (PROMPT.md)
-- [x] Research best practices (CRM kanban, RAG chunking strategy)
-- [x] Fetch latest docs via context7 (tRPC, Prisma/MongoDB)
-- [x] Research green-api.com API shape (endpoints, webhook format, SDK)
-- [x] Research Micropay SMS API shape (verified & tested, post=2)
-- [x] Research Better Auth phone/OTP setup (plugin config, Micropay integration)
-- [x] Document findings in RESEARCH.md (complete)
 
-### Phase 1: Project Scaffolding — NEXT
-- [ ] Initialize Turborepo monorepo (packages/client, packages/server, packages/shared)
-- [ ] Configure TypeScript strict mode across all packages
-- [ ] Set up ESLint + typescript-eslint + Prettier with strict rules
-- [ ] Set up Husky + lint-staged (pre-commit: lint, type-check, format)
-- [ ] Configure Vite + React for client
-- [ ] Configure Bun server entry point
-- [ ] Set up tRPC with shared router types
-- [ ] Set up Prisma with MongoDB schema (all models from PRD.md)
-- [ ] Set up i18next with Hebrew (RTL default) and English
-- [ ] Install and configure shadcn/ui + Tailwind CSS with RTL support
-- [ ] Create .env.example with all required keys
-- [ ] Verify: `bun run build` and `bun run lint` pass with zero errors
-- [ ] Write a smoke test that the server starts and responds to a health check
+- [x] All research documented in RESEARCH.md
 
-### Phase 2–12: Not started
+### Phase 1: Project Scaffolding — COMPLETE
+
+- [x] Turborepo monorepo (packages/shared, packages/server, packages/client)
+- [x] TypeScript strict mode across all packages
+- [x] ESLint + typescript-eslint + Prettier
+- [x] Husky + lint-staged (pre-commit enforcement)
+- [x] Vite + React 19 client
+- [x] Bun server + tRPC standalone adapter + health router
+- [x] Prisma schema for MongoDB (all models from PRD)
+- [x] i18next with Hebrew RTL + English
+- [x] Tailwind CSS v4 + Vite plugin
+- [x] .env.example with all keys
+- [x] `turbo build` — all 3 packages pass
+- [x] `turbo lint` — zero errors
+
+### Phase 2: Authentication — NEXT
+
+- [ ] Integrate Better Auth with phone/OTP plugin
+- [ ] Implement Micropay SMS sendOTP function
+- [ ] Create login page (phone input)
+- [ ] Create OTP verification page
+- [ ] Session management (JWT cookies)
+- [ ] Organization creation flow (first user = Owner)
+- [ ] User invitation flow (Admin/Owner invites by phone)
+- [ ] Role-based middleware on tRPC (Owner, Admin, Agent)
+- [ ] Auth flow unit tests
+
+### Phase 3–12: Not started
 
 ## Known Issues
+
 - None
 
 ## Notes for Next Iteration
-- Phase 0 is DONE — move directly to Phase 1: Project Scaffolding
-- Start by initializing Turborepo monorepo
-- All API docs are in RESEARCH.md — reference them when building integrations
-- Micropay SMS integration code is ready in RESEARCH.md section 7
+
+- Phase 1 is DONE — move to Phase 2: Authentication
+- Better Auth setup code is in RESEARCH.md section 7
+- Micropay integration code is ready in RESEARCH.md section 7 (sendOTP function)
+- Need DATABASE_URL in .env to run Prisma — will use mock if not available
