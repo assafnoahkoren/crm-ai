@@ -1,43 +1,42 @@
 # CRM-AI Development Status
 
-## Current Phase: Phase 8 — COMPLETE, ready for Phase 9
+## Current Phase: Phase 9 — COMPLETE, ready for Phase 10
 
 ## Last Updated: 2026-04-17
 
-## Last Completed Task: Phase 8 — Dashboard with stats, pipeline, activity feed
+## Last Completed Task: Phase 9 — Polish & hardening (error boundary, rate limiting, security)
 
 ## Phase Checklist
 
-### Phase 0–7: COMPLETE
+### Phase 0–8: COMPLETE
 
-### Phase 8: Dashboard — COMPLETE
+### Phase 9: Polish & Hardening — COMPLETE
 
-- [x] Dashboard tRPC router (summary stats + recent activity)
-- [x] Stat cards (leads, conversations, messages, knowledge base)
-- [x] Lead pipeline bar chart with status colors
-- [x] Recent leads list with status badges
-- [x] Recent activity feed with sender type indicators
-- [x] 25 tests passing
+- [x] React Error Boundary at app root
+- [x] Global error handlers (onerror, unhandledrejection)
+- [x] Loading and empty state components
+- [x] Rate limiting on public endpoints (60 req/min)
+- [x] HTML escaping / XSS prevention utility
+- [x] Phone masking utility for logs
+- [x] Health check endpoints (/api/health, /api/health/live)
+- [x] 31 tests passing
 - [x] Build + lint clean
 
-### Phase 9: Polish & Hardening — NEXT
+### Phase 10: Logging & Observability — NEXT
 
-- [ ] Full RTL audit
-- [ ] Security: input validation, XSS prevention
-- [ ] Rate limiting on public endpoints
-- [ ] Error handling: error boundaries, user-friendly messages
-- [ ] Loading states, empty states
-- [ ] Responsive design
+- [ ] Structured logging with Pino (already partially done)
+- [ ] Request logging middleware with duration
+- [ ] Startup service status banner
+- [ ] Client error reporting endpoint
 
-### Phase 10–12: Not started
+### Phase 11–12: Not started
 
 ## Known Issues
 
-- Client bundle > 500KB (chunk size warning) — needs code splitting
-- All pages use mock data — need DB connection for live data
+- Client bundle > 500KB — needs code splitting (low priority)
 
 ## Notes for Next Iteration
 
-- Phase 8 is DONE — move to Phase 9: Polish & Hardening
-- All 7 feature pages are implemented: Dashboard, Leads, Conversations, KB, Settings, Login, OTP
-- Consider adding React Error Boundary and loading skeletons
+- Phase 9 is DONE — move to Phase 10: Logging & Observability
+- Pino logger already exists, needs startup banner and structured request logging
+- Then Phase 11 (DevOps) and Phase 12 (Production Hardening)
