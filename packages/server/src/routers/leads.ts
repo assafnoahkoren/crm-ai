@@ -60,9 +60,11 @@ export const leadsRouter = router({
   }),
 
   create: protectedProcedure.input(createLeadInput).mutation(async ({ input, ctx }) => {
+    const { sourceMetadata, ...rest } = input;
     const lead = await prisma.lead.create({
       data: {
-        ...input,
+        ...rest,
+        sourceMetadata: sourceMetadata ? JSON.parse(JSON.stringify(sourceMetadata)) : undefined,
         organizationId: ctx.organizationId!,
       },
     });

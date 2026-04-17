@@ -6,6 +6,7 @@ import { trpc } from "./lib/trpc";
 import { useSession, signOut } from "./lib/auth";
 import { AuthFlow } from "./features/auth/AuthFlow";
 import { LeadsPage } from "./features/leads/LeadsPage";
+import { KnowledgeBasePage } from "./features/knowledge-base/KnowledgeBasePage";
 import { useTranslation } from "react-i18next";
 import "./lib/i18n";
 import "./styles/globals.css";
@@ -101,10 +102,7 @@ function AppContent() {
               path="/conversations"
               element={<PlaceholderPage title={t("nav.conversations")} />}
             />
-            <Route
-              path="/knowledge-base"
-              element={<PlaceholderPage title={t("nav.knowledgeBase")} />}
-            />
+            <Route path="/knowledge-base" element={<KnowledgeBasePage />} />
             <Route path="/settings" element={<PlaceholderPage title={t("nav.settings")} />} />
             <Route path="*" element={<Navigate to="/leads" replace />} />
           </Routes>
