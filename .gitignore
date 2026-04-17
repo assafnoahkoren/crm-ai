@@ -1,1 +1,22 @@
+# Environment variables
 .env
+.env.production
+.env.local
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.turbo/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Ralph Loop state
+.claude/

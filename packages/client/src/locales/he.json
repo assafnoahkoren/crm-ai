@@ -1,0 +1,71 @@
+{
+  "app": {
+    "name": "CRM-AI"
+  },
+  "nav": {
+    "dashboard": "לוח בקרה",
+    "leads": "לידים",
+    "conversations": "שיחות",
+    "knowledgeBase": "מאגר ידע",
+    "settings": "הגדרות"
+  },
+  "auth": {
+    "login": "התחברות",
+    "phone": "מספר טלפון",
+    "otp": "קוד אימות",
+    "sendCode": "שלח קוד",
+    "verify": "אמת",
+    "logout": "התנתק"
+  },
+  "leads": {
+    "title": "לידים",
+    "new": "חדש",
+    "contacted": "נוצר קשר",
+    "qualified": "מוכשר",
+    "proposal": "הצעה",
+    "negotiation": "משא ומתן",
+    "won": "זכייה",
+    "lost": "הפסד",
+    "addLead": "הוסף ליד",
+    "name": "שם",
+    "phone": "טלפון",
+    "email": "אימייל",
+    "company": "חברה",
+    "status": "סטטוס",
+    "source": "מקור",
+    "assignedTo": "שויך ל",
+    "notes": "הערות",
+    "tags": "תגיות"
+  },
+  "dashboard": {
+    "title": "לוח בקרה",
+    "pipeline": "צינור לידים",
+    "conversations": "שיחות פעילות",
+    "recentActivity": "פעילות אחרונה",
+    "performance": "ביצועים"
+  },
+  "conversations": {
+    "title": "שיחות",
+    "sendMessage": "שלח הודעה",
+    "typeMessage": "הקלד הודעה...",
+    "botActive": "בוט פעיל",
+    "botInactive": "בוט כבוי"
+  },
+  "knowledgeBase": {
+    "title": "מאגר ידע",
+    "upload": "העלה מסמך",
+    "processing": "מעבד",
+    "ready": "מוכן",
+    "error": "שגיאה"
+  },
+  "common": {
+    "save": "שמור",
+    "cancel": "ביטול",
+    "delete": "מחק",
+    "edit": "ערוך",
+    "search": "חיפוש",
+    "loading": "טוען...",
+    "noData": "אין נתונים",
+    "error": "שגיאה"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "app": {
+    "name": "CRM-AI"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "leads": "Leads",
+    "conversations": "Conversations",
+    "knowledgeBase": "Knowledge Base",
+    "settings": "Settings"
+  },
+  "auth": {
+    "login": "Login",
+    "phone": "Phone Number",
+    "otp": "Verification Code",
+    "sendCode": "Send Code",
+    "verify": "Verify",
+    "logout": "Logout"
+  },
+  "leads": {
+    "title": "Leads",
+    "new": "New",
+    "contacted": "Contacted",
+    "qualified": "Qualified",
+    "proposal": "Proposal",
+    "negotiation": "Negotiation",
+    "won": "Won",
+    "lost": "Lost",
+    "addLead": "Add Lead",
+    "name": "Name",
+    "phone": "Phone",
+    "email": "Email",
+    "company": "Company",
+    "status": "Status",
+    "source": "Source",
+    "assignedTo": "Assigned To",
+    "notes": "Notes",
+    "tags": "Tags"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "pipeline": "Lead Pipeline",
+    "conversations": "Active Conversations",
+    "recentActivity": "Recent Activity",
+    "performance": "Performance"
+  },
+  "conversations": {
+    "title": "Conversations",
+    "sendMessage": "Send Message",
+    "typeMessage": "Type a message...",
+    "botActive": "Bot Active",
+    "botInactive": "Bot Inactive"
+  },
+  "knowledgeBase": {
+    "title": "Knowledge Base",
+    "upload": "Upload Document",
+    "processing": "Processing",
+    "ready": "Ready",
+    "error": "Error"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "loading": "Loading...",
+    "noData": "No data",
+    "error": "Error"
+  }
+}

@@ -1,0 +1,195 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ── Organization ──────────────────────────────────────
+
+model Organization {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  slug      String   @unique
+  plan      String   @default("free")
+  settings  Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users              User[]
+  leads              Lead[]
+  conversations      Conversation[]
+  knowledgeDocuments KnowledgeDocument[]
+  knowledgeChunks    KnowledgeChunk[]
+  automationRules    AutomationRule[]
+  messageTemplates   MessageTemplate[]
+}
+
+// ── User ──────────────────────────────────────────────
+
+model User {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  organizationId String    @db.ObjectId
+  phone          String
+  name           String
+  role           String    @default("agent") // owner | admin | agent
+  avatar         String?
+  isActive       Boolean   @default(true)
+  lastLoginAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  assignedLeads Lead[]      @relation("AssignedAgent")
+  sentMessages  Message[]   @relation("SenderAgent")
+
+  @@unique([organizationId, phone])
+  @@index([organizationId])
+}
+
+// ── Lead ──────────────────────────────────────────────
+
+model Lead {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  organizationId   String   @db.ObjectId
+  source           String   @default("manual") // manual | facebook | website | api
+  sourceMetadata   Json?
+  status           String   @default("new")
+  name             String
+  phone            String
+  email            String?
+  company          String?
+  notes            String?
+  tags             String[]
+  assignedToUserId String?  @db.ObjectId
+  customFields     Json?
+  score            Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  organization Organization  @relation(fields: [organizationId], references: [id])
+  assignedTo   User?         @relation("AssignedAgent", fields: [assignedToUserId], references: [id])
+  conversation Conversation?
+
+  @@index([organizationId])
+  @@index([organizationId, status])
+  @@index([organizationId, phone])
+}
+
+// ── Conversation ──────────────────────────────────────
+
+model Conversation {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  organizationId String    @db.ObjectId
+  leadId         String    @unique @db.ObjectId
+  whatsappChatId String?
+  phone          String
+  isBot          Boolean   @default(true)
+  lastMessageAt  DateTime?
+  unreadCount    Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  lead         Lead         @relation(fields: [leadId], references: [id])
+  messages     Message[]
+
+  @@index([organizationId])
+  @@index([organizationId, lastMessageAt])
+}
+
+// ── Message ───────────────────────────────────────────
+
+model Message {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  conversationId String   @db.ObjectId
+  direction      String   // inbound | outbound
+  sender         String   // bot | agent | customer
+  senderUserId   String?  @db.ObjectId
+  type           String   @default("text") // text | image | document | voice | location
+  content        String
+  mediaUrl       String?
+  metadata       Json?
+  status         String   @default("sent") // sent | delivered | read | failed
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+  senderUser   User?        @relation("SenderAgent", fields: [senderUserId], references: [id])
+
+  @@index([conversationId])
+  @@index([conversationId, createdAt])
+}
+
+// ── Knowledge Base ────────────────────────────────────
+
+model KnowledgeDocument {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  organizationId String   @db.ObjectId
+  title          String
+  content        String?
+  fileUrl        String?
+  mimeType       String?
+  category       String?
+  tags           String[]
+  chunkCount     Int      @default(0)
+  status         String   @default("processing") // processing | ready | error
+  uploadedByUserId String @db.ObjectId
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization   @relation(fields: [organizationId], references: [id])
+  chunks       KnowledgeChunk[]
+
+  @@index([organizationId])
+}
+
+model KnowledgeChunk {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  documentId     String   @db.ObjectId
+  organizationId String   @db.ObjectId
+  content        String
+  embedding      Float[]
+  position       Int
+  metadata       Json?
+
+  document     KnowledgeDocument @relation(fields: [documentId], references: [id])
+  organization Organization      @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId])
+  @@index([documentId])
+}
+
+// ── Automations ───────────────────────────────────────
+
+model AutomationRule {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  organizationId String   @db.ObjectId
+  trigger        String   // status_change | no_response | schedule
+  triggerConfig  Json
+  action         String   // send_template | assign_agent | change_status
+  actionConfig   Json
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId])
+}
+
+model MessageTemplate {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  organizationId String   @db.ObjectId
+  name           String
+  content        String
+  category       String?
+  language       String   @default("he")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId])
+}
