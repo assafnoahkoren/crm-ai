@@ -1,36 +1,37 @@
 # CRM-AI Development Status
 
-## Current Phase: Phase 5 — COMPLETE, ready for Phase 6
+## Current Phase: Phase 6 — COMPLETE, ready for Phase 7
 
 ## Last Updated: 2026-04-17
 
-## Last Completed Task: Phase 5 — WhatsApp integration with green-api, chat UI
+## Last Completed Task: Phase 6 — AI Bot with RAG + LLM pipeline
 
 ## Phase Checklist
 
-### Phase 0–4: COMPLETE
+### Phase 0–5: COMPLETE
 
-### Phase 5: WhatsApp Integration — COMPLETE
+### Phase 6: AI Bot — COMPLETE
 
-- [x] WhatsApp service (green-api.com real + mock with factory)
-- [x] Webhook handler: POST /api/webhooks/whatsapp
-- [x] Conversations tRPC router (list, getById, messages, sendMessage, toggleBot)
-- [x] Chat UI (conversation list with unread badges + message view)
-- [x] Message bubbles: customer/agent/bot differentiated by color
-- [x] 15 tests passing
+- [x] LLM service (OpenAI GPT-4o + keyword-matching mock)
+- [x] Bot pipeline: webhook → RAG → LLM → WhatsApp send
+- [x] System prompt configurable per org
+- [x] Conversation history context (last 10 messages)
+- [x] Confidence threshold logging (< 0.4)
+- [x] Response delay (3s)
+- [x] Bot response metadata stored in DB
+- [x] 20 tests passing
 - [x] Build + lint clean
 
-### Phase 6: AI Bot — NEXT
+### Phase 7: Automations — NEXT
 
-- [ ] LLM service (OpenAI GPT-4o + mock with factory)
-- [ ] Bot service: incoming message → RAG → LLM response → send via WhatsApp
-- [ ] System prompt configuration per org
-- [ ] Conversation history context (last N messages)
-- [ ] Confidence threshold → escalate to human
-- [ ] Response delay (configurable)
+- [ ] Automation rules engine (trigger → condition → action)
+- [ ] Status-change triggers with template messages
+- [ ] No-response reminders (scheduled)
+- [ ] Message template management (with {{variable}} interpolation)
+- [ ] Automation configuration UI
 - [ ] Tests
 
-### Phase 7–12: Not started
+### Phase 8–12: Not started
 
 ## Known Issues
 
@@ -38,7 +39,7 @@
 
 ## Notes for Next Iteration
 
-- Phase 5 is DONE — move to Phase 6: AI Bot
-- The WhatsApp webhook has a TODO comment for bot integration
-- RAG retrieval service is already built in Phase 4
-- Need to connect: webhook → RAG retriever → LLM → WhatsApp send
+- Phase 6 is DONE — move to Phase 7: Automations
+- Need template variable interpolation: {{lead.name}}, {{agent.name}}, {{org.name}}
+- Status-change triggers should fire when lead status changes via tRPC
+- No-response reminders need a cron/scheduled job runner
