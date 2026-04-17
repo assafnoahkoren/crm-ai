@@ -7,6 +7,7 @@ import { useSession, signOut } from "./lib/auth";
 import { AuthFlow } from "./features/auth/AuthFlow";
 import { LeadsPage } from "./features/leads/LeadsPage";
 import { KnowledgeBasePage } from "./features/knowledge-base/KnowledgeBasePage";
+import { ConversationsPage } from "./features/conversations/ConversationsPage";
 import { useTranslation } from "react-i18next";
 import "./lib/i18n";
 import "./styles/globals.css";
@@ -98,10 +99,7 @@ function AppContent() {
           <Routes>
             <Route path="/dashboard" element={<DashboardPlaceholder />} />
             <Route path="/leads" element={<LeadsPage />} />
-            <Route
-              path="/conversations"
-              element={<PlaceholderPage title={t("nav.conversations")} />}
-            />
+            <Route path="/conversations" element={<ConversationsPage />} />
             <Route path="/knowledge-base" element={<KnowledgeBasePage />} />
             <Route path="/settings" element={<PlaceholderPage title={t("nav.settings")} />} />
             <Route path="*" element={<Navigate to="/leads" replace />} />

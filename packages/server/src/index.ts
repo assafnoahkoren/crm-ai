@@ -5,6 +5,7 @@ import { createContext } from "./trpc";
 import { logger } from "./lib/logger";
 import { auth } from "./auth/auth";
 import { handleLeadIngest } from "./webhooks/lead-ingest";
+import { handleWhatsAppWebhook } from "./webhooks/whatsapp";
 
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -27,6 +28,12 @@ const server = createHTTPServer({
     // Route /api/v1/leads/ingest to webhook handler
     if (url.pathname === "/api/v1/leads/ingest") {
       await handleLeadIngest(req, res);
+      return;
+    }
+
+    // WhatsApp webhook from green-api.com
+    if (url.pathname === "/api/webhooks/whatsapp") {
+      await handleWhatsAppWebhook(req, res);
       return;
     }
 
