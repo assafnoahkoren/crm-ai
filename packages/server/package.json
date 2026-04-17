@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "build": "bun build src/index.ts --outdir dist --target bun",
+    "build": "bunx prisma generate && bun build src/index.ts --outdir dist --target bun",
     "start": "bun dist/index.js",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
