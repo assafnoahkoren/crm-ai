@@ -1,40 +1,36 @@
 # CRM-AI Development Status
 
-## Current Phase: Phase 3 — COMPLETE, ready for Phase 4
+## Current Phase: Phase 4 — COMPLETE, ready for Phase 5
 
 ## Last Updated: 2026-04-17
 
-## Last Completed Task: Phase 3 — Leads management with Kanban board and webhook
+## Last Completed Task: Phase 4 — Knowledge Base & RAG with embeddings, chunking, retrieval
 
 ## Phase Checklist
 
-### Phase 0–2: COMPLETE
+### Phase 0–3: COMPLETE
 
-### Phase 3: Core CRM — Leads Management — COMPLETE
+### Phase 4: Knowledge Base & RAG — COMPLETE
 
-- [x] Leads tRPC router (list, getById, create, update, updateStatus, delete, bulkUpdateStatus, stats)
-- [x] Prisma client wrapper with error logging
-- [x] Kanban board with @dnd-kit drag-and-drop
-- [x] Lead card component (name, phone, company, tags)
-- [x] Lead detail side panel (editable fields)
-- [x] Lead ingestion webhook (POST /api/v1/leads/ingest with API key auth)
-- [x] Health check endpoint (GET /api/health)
-- [x] App layout with sidebar navigation (RTL) + react-router-dom
-- [x] Mock leads data for development
-- [x] All tests pass, build + lint clean
+- [x] Embedding service (OpenAI + mock with factory pattern)
+- [x] Text chunker (recursive, 512 tokens, 50 overlap)
+- [x] Document processor (chunk → embed → store)
+- [x] RAG retriever (cosine similarity, top-K, min score threshold)
+- [x] Knowledge base tRPC router (list, getById, create, update, delete, search)
+- [x] Knowledge base UI (document table, upload modal, status badges)
+- [x] 12 tests passing
+- [x] Build + lint clean
 
-### Phase 4: Knowledge Base & RAG — NEXT
+### Phase 5: WhatsApp Integration — NEXT
 
-- [ ] Document upload service (PDF, DOCX, TXT, MD, CSV)
-- [ ] Text extraction pipeline
-- [ ] Chunking (512 tokens, 50 overlap)
-- [ ] OpenAI embeddings integration (real + mock)
-- [ ] Vector storage in MongoDB
-- [ ] RAG retrieval service
-- [ ] Knowledge base management UI
+- [ ] green-api.com service (real + mock with factory)
+- [ ] Webhook handler for incoming messages
+- [ ] Conversation tRPC router
+- [ ] Chat UI (conversation list + message view)
+- [ ] Link conversations to leads by phone
 - [ ] Tests
 
-### Phase 5–12: Not started
+### Phase 6–12: Not started
 
 ## Known Issues
 
@@ -42,7 +38,8 @@
 
 ## Notes for Next Iteration
 
-- Phase 3 is DONE — move to Phase 4: Knowledge Base & RAG
-- Need OpenAI API key for real embeddings — will use mock (hash-based vectors)
-- Consider using LangChain.js or build custom chunking
-- MongoDB Atlas Vector Search needs Atlas cluster — mock with in-memory similarity for now
+- Phase 4 is DONE — move to Phase 5: WhatsApp Integration
+- green-api.com API docs are in RESEARCH.md section 6
+- URL pattern: POST {{apiUrl}}/waInstance{{idInstance}}/{{method}}/{{apiTokenInstance}}
+- ChatId format: phone@c.us (e.g., 972521234567@c.us)
+- Need GREEN_API_INSTANCE_ID + GREEN_API_TOKEN — will use mock
