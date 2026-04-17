@@ -9,6 +9,7 @@ import { LeadsPage } from "./features/leads/LeadsPage";
 import { KnowledgeBasePage } from "./features/knowledge-base/KnowledgeBasePage";
 import { ConversationsPage } from "./features/conversations/ConversationsPage";
 import { SettingsPage } from "./features/settings/SettingsPage";
+import { DashboardPage } from "./features/dashboard/DashboardPage";
 import { useTranslation } from "react-i18next";
 import "./lib/i18n";
 import "./styles/globals.css";
@@ -57,16 +58,6 @@ function Sidebar() {
   );
 }
 
-function DashboardPlaceholder() {
-  const { t } = useTranslation();
-  return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">{t("dashboard.title")}</h2>
-      <p className="text-gray-500">Dashboard coming in Phase 8</p>
-    </div>
-  );
-}
-
 function AppContent() {
   const { t } = useTranslation();
   const { data: session, isPending } = useSession();
@@ -89,7 +80,7 @@ function AppContent() {
         <Sidebar />
         <main className="flex-1 overflow-hidden">
           <Routes>
-            <Route path="/dashboard" element={<DashboardPlaceholder />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/leads" element={<LeadsPage />} />
             <Route path="/conversations" element={<ConversationsPage />} />
             <Route path="/knowledge-base" element={<KnowledgeBasePage />} />

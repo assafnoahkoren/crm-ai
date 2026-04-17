@@ -4,6 +4,7 @@ import { leadsRouter } from "./leads";
 import { knowledgeBaseRouter } from "./knowledge-base";
 import { conversationsRouter } from "./conversations";
 import { automationsRouter } from "./automations";
+import { dashboardRouter } from "./dashboard";
 
 export const appRouter = router({
   health: healthRouter,
@@ -11,6 +12,7 @@ export const appRouter = router({
   knowledgeBase: knowledgeBaseRouter,
   conversations: conversationsRouter,
   automations: automationsRouter,
+  dashboard: dashboardRouter,
 });
 
 export type AppRouter = typeof appRouter;
