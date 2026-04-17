@@ -1,47 +1,48 @@
 # CRM-AI Development Status
 
-## Current Phase: Phase 2 — COMPLETE, ready for Phase 3
+## Current Phase: Phase 3 — COMPLETE, ready for Phase 4
 
 ## Last Updated: 2026-04-17
 
-## Last Completed Task: Phase 2 Auth — Better Auth + phone/OTP + Micropay + role middleware
+## Last Completed Task: Phase 3 — Leads management with Kanban board and webhook
 
 ## Phase Checklist
 
-### Phase 0–1: COMPLETE
+### Phase 0–2: COMPLETE
 
-### Phase 2: Authentication — COMPLETE
+### Phase 3: Core CRM — Leads Management — COMPLETE
 
-- [x] Better Auth with phone/OTP plugin + organization plugin
-- [x] Micropay SMS provider (real + mock with factory pattern)
-- [x] Login page (phone input, RTL-aware)
-- [x] OTP verification page (6-digit input, auto-submit)
-- [x] Auth flow component (phone → OTP → dashboard)
-- [x] Session management (Better Auth handles JWT cookies)
-- [x] Role-based tRPC middleware (public, protected, admin, owner)
-- [x] Tests: SMS provider (3 tests), health router (1 test) — all pass
-- [x] Build + lint pass
+- [x] Leads tRPC router (list, getById, create, update, updateStatus, delete, bulkUpdateStatus, stats)
+- [x] Prisma client wrapper with error logging
+- [x] Kanban board with @dnd-kit drag-and-drop
+- [x] Lead card component (name, phone, company, tags)
+- [x] Lead detail side panel (editable fields)
+- [x] Lead ingestion webhook (POST /api/v1/leads/ingest with API key auth)
+- [x] Health check endpoint (GET /api/health)
+- [x] App layout with sidebar navigation (RTL) + react-router-dom
+- [x] Mock leads data for development
+- [x] All tests pass, build + lint clean
 
-### Phase 3: Core CRM — Leads Management — NEXT
+### Phase 4: Knowledge Base & RAG — NEXT
 
-- [ ] Leads tRPC router (CRUD, status transitions, bulk actions)
-- [ ] Kanban board view (drag-and-drop between status columns)
-- [ ] Table view (sortable, filterable)
-- [ ] Lead detail side panel
-- [ ] Lead source tracking
-- [ ] Lead ingestion webhook
+- [ ] Document upload service (PDF, DOCX, TXT, MD, CSV)
+- [ ] Text extraction pipeline
+- [ ] Chunking (512 tokens, 50 overlap)
+- [ ] OpenAI embeddings integration (real + mock)
+- [ ] Vector storage in MongoDB
+- [ ] RAG retrieval service
+- [ ] Knowledge base management UI
 - [ ] Tests
 
-### Phase 4–12: Not started
+### Phase 5–12: Not started
 
 ## Known Issues
 
-- Organization creation/invite flow not yet built (Better Auth org plugin configured but no UI)
-- Auth handler integration in server uses basic request forwarding — may need refinement
+- None
 
 ## Notes for Next Iteration
 
-- Phase 2 is DONE — move to Phase 3: Leads Management
-- Need a leads tRPC router with CRUD operations
-- Kanban board needs drag-and-drop library (consider @dnd-kit or react-beautiful-dnd)
-- No DATABASE_URL yet — will need mock data or SMS the owner for MongoDB Atlas setup
+- Phase 3 is DONE — move to Phase 4: Knowledge Base & RAG
+- Need OpenAI API key for real embeddings — will use mock (hash-based vectors)
+- Consider using LangChain.js or build custom chunking
+- MongoDB Atlas Vector Search needs Atlas cluster — mock with in-memory similarity for now
