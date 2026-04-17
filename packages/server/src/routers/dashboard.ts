@@ -114,7 +114,7 @@ export const dashboardRouter = router({
 
     return {
       leads: recentLeads,
-      messages: recentMessages.map((m) => ({
+      messages: recentMessages.map((m: (typeof recentMessages)[number]) => ({
         id: m.id,
         sender: m.sender,
         direction: m.direction,

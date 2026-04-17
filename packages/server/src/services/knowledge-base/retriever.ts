@@ -52,14 +52,14 @@ export async function retrieveChunks(
 
   // 3. Compute similarity scores
   const scored = chunks
-    .map((chunk) => ({
+    .map((chunk: (typeof chunks)[number]) => ({
       content: chunk.content,
       score: cosineSimilarity(queryEmbedding, chunk.embedding),
       documentTitle: chunk.document.title,
       documentId: chunk.documentId,
       position: chunk.position,
     }))
-    .filter((r) => r.score >= minScore)
+    .filter((r: { score: number }) => r.score >= minScore)
     .sort((a, b) => b.score - a.score)
     .slice(0, topK);
 

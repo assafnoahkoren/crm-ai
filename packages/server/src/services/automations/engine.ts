@@ -27,7 +27,7 @@ export async function onLeadStatusChange(event: StatusChangeEvent): Promise<void
     },
   });
 
-  const matchingRules = rules.filter((rule) => {
+  const matchingRules = rules.filter((rule: (typeof rules)[number]) => {
     const config = rule.triggerConfig as Record<string, unknown>;
     return config.status === newStatus;
   });
