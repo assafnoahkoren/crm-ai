@@ -13,14 +13,15 @@
   },
   "dependencies": {
     "@crm-ai/shared": "workspace:*",
+    "@tanstack/react-query": "^5",
     "@trpc/client": "^11",
     "@trpc/react-query": "^11",
-    "@tanstack/react-query": "^5",
+    "better-auth": "^1.6.5",
+    "i18next": "^24",
     "react": "^19",
     "react-dom": "^19",
-    "react-router-dom": "^7",
-    "i18next": "^24",
-    "react-i18next": "^15"
+    "react-i18next": "^15",
+    "react-router-dom": "^7"
   },
   "devDependencies": {
     "typescript": "^5",
