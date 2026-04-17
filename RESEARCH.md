@@ -222,31 +222,228 @@ curl -s -X POST "https://www.micropay.co.il/ExtApi/ScheduleSms.php" \
 
 ## 6. green-api.com WhatsApp API
 
-*Research in progress — agent collecting API docs.*
+### Authentication
+- Each instance has: `idInstance` (unique number) + `apiTokenInstance` (access key)
+- Get these from the GREEN-API console after creating an instance
+- Must scan QR code from WhatsApp mobile app to authorize
 
-### Known from website
-- REST API for sending/receiving WhatsApp messages
-- Instance-based model (each org gets an instance ID + token)
-- Webhook-based message receiving
-- Supports: text, image, document, location messages
-- Official Node.js SDK: `@green-api/whatsapp-api-client`
+### API URL Pattern
+```
+POST {{apiUrl}}/waInstance{{idInstance}}/{{method}}/{{apiTokenInstance}}
+```
 
-**TODO:** Document exact endpoints, webhook payload format, and SDK usage once research completes.
+Example: `POST https://api.green-api.com/waInstance1234/sendMessage/abc123token`
+
+### Key Endpoints
+
+**Sending Messages:**
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/sendMessage` | Send text message |
+| POST | `/sendFileByUrl` | Send file via external URL |
+| POST | `/sendFileByUpload` | Upload and send file |
+| POST | `/sendLocation` | Send location |
+| POST | `/sendContact` | Send contact card |
+| POST | `/forwardMessages` | Forward existing messages |
+
+**Send Text Example:**
+```typescript
+// POST {{apiUrl}}/waInstance{{idInstance}}/sendMessage/{{apiTokenInstance}}
+{
+  "chatId": "972521234567@c.us",  // phone@c.us for private, @g.us for groups
+  "message": "Hello from CRM-AI!"
+}
+```
+
+**Receiving Messages — Two Methods:**
+
+1. **HTTP API (polling):** Call `ReceiveNotification` → process → call `DeleteNotification`
+2. **Webhook Endpoint:** Set a public URL via `SetSettings` → GREEN-API pushes events to it
+
+**Webhook Events:**
+- `incomingMessageReceived` — new message from contact
+- `outgoingMessageStatus` — sent/delivered/read status updates
+- `stateInstanceChanged` — instance connection status
+- `incomingCall` — incoming WhatsApp call
+
+**Instance Management:**
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/getSettings` | Get instance config |
+| POST | `/setSettings` | Set webhook URL, enable event types |
+| POST | `/getStateInstance` | Check if connected to WhatsApp |
+| POST | `/reboot` | Restart instance |
+| POST | `/logout` | Disconnect WhatsApp |
+| POST | `/qr` | Get QR code for scanning |
+
+### Chat ID Format
+- Private chat: `{phoneNumber}@c.us` (e.g., `972521234567@c.us`)
+- Group chat: `{groupId}@g.us`
+- Phone number without `+` prefix, include country code
+
+### Node.js SDK
+```bash
+npm install @green-api/whatsapp-api-client
+```
+
+```typescript
+import whatsAppClient from '@green-api/whatsapp-api-client';
+
+const restAPI = whatsAppClient.restAPI({
+  idInstance: process.env.GREEN_API_INSTANCE_ID,
+  apiTokenInstance: process.env.GREEN_API_TOKEN,
+});
+
+// Send message
+await restAPI.message.sendMessage('972521234567@c.us', null, 'Hello!');
+
+// Get instance state
+const state = await restAPI.instance.getStateInstance();
+```
+
+### Setup Steps
+1. Create account at green-api.com
+2. Create an instance in the console
+3. Scan QR code from WhatsApp app on phone
+4. Get `idInstance` + `apiTokenInstance` from console
+5. Configure webhook URL via `setSettings`
+
+### Pricing
+- Free tier available (limited messages)
+- Paid plans based on message volume
 
 ---
 
-## 7. Better Auth
+## 7. Better Auth — Phone/OTP Authentication
 
-*Research in progress — agent collecting docs.*
+### Installation
+```bash
+bun add better-auth
+```
 
-### Known from docs
-- Auth library for TypeScript applications
-- Supports phone/OTP authentication
-- Plugin-based architecture (phone, organization, etc.)
-- Session management with JWT
-- Custom adapter support for SMS providers
+### Server Configuration
+```typescript
+import { betterAuth } from "better-auth";
+import { phoneNumber } from "better-auth/plugins";
 
-**TODO:** Document phone auth setup, custom SMS provider integration, and tRPC middleware once research completes.
+export const auth = betterAuth({
+  database: prismaAdapter(prisma),  // or MongoDB adapter
+  plugins: [
+    phoneNumber({
+      sendOTP: async ({ phoneNumber, code }, ctx) => {
+        // Send OTP via Micropay
+        await micropayProvider.sendOtp(phoneNumber, code);
+      },
+      otpLength: 6,           // OTP code length
+      expiresIn: 300,          // 5 minutes expiry
+      allowedAttempts: 3,      // max verification tries
+      signUpOnVerification: {  // auto-create user on first verify
+        getTempEmail: (phone) => `${phone}@crm-ai.app`,
+        getTempName: (phone) => phone,
+      },
+    }),
+  ],
+});
+```
+
+### Configuration Options
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `otpLength` | number | 6 | Characters in OTP code |
+| `expiresIn` | number | 300 | Seconds until OTP expires |
+| `allowedAttempts` | number | 3 | Max verification tries before code invalidated |
+| `sendOTP` | function | required | Callback to send OTP via SMS provider |
+| `verifyOTP` | function | optional | External verification service (e.g., Twilio Verify) |
+| `signUpOnVerification` | object | optional | Auto-create account on first verification |
+| `phoneNumberValidator` | function | optional | Custom phone format validation |
+| `callbackOnVerification` | function | optional | Post-verification hook |
+| `requireVerification` | boolean | optional | Enforce verification before signin |
+
+### Client Setup
+```typescript
+import { createAuthClient } from "better-auth/client";
+import { phoneNumberClient } from "better-auth/client/plugins";
+
+export const authClient = createAuthClient({
+  baseURL: "http://localhost:3000",
+  plugins: [phoneNumberClient()],
+});
+```
+
+### Client API Methods
+
+**Send OTP:**
+```typescript
+await authClient.phoneNumber.sendOtp({
+  phoneNumber: "+972521234567",
+});
+```
+
+**Verify OTP (creates session):**
+```typescript
+const { data, error } = await authClient.phoneNumber.verify({
+  phoneNumber: "+972521234567",
+  code: "123456",
+  disableSession: false,    // set true to prevent auto-login
+  updatePhoneNumber: false, // set true to update existing user's phone
+});
+```
+
+**Sign in with phone + password (if using password flow):**
+```typescript
+await authClient.signIn.phoneNumber({
+  phoneNumber: "+972521234567",
+  password: "user-password",
+  rememberMe: true,
+});
+```
+
+### Database Fields Added
+Run `npx auth migrate` to add:
+- `phoneNumber` (string, optional) on User table
+- `phoneNumberVerified` (boolean, optional) on User table
+
+### Auth Flow for CRM-AI
+1. User enters phone number on login page
+2. Client calls `authClient.phoneNumber.sendOtp({ phoneNumber })`
+3. Server generates 6-digit OTP, calls `sendOTP` → Micropay sends SMS
+4. User enters OTP on verification page
+5. Client calls `authClient.phoneNumber.verify({ phoneNumber, code })`
+6. If `signUpOnVerification` is set, new user auto-created on first verify
+7. Session created automatically (JWT cookie)
+8. Redirect to dashboard
+
+### Integration with Micropay
+```typescript
+phoneNumber({
+  sendOTP: async ({ phoneNumber, code }) => {
+    const response = await fetch(
+      "https://www.micropay.co.il/ExtApi/ScheduleSms.php",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          post: "2",
+          token: process.env.MICROPAY_SMS_TOKEN!,
+          msg: `Your CRM-AI verification code: ${code}`,
+          list: phoneNumber.replace("+", ""),
+          from: "0501234567",
+          type: "sms",
+        }),
+      }
+    );
+    const text = await response.text();
+    if (text.includes("ERROR")) {
+      throw new Error(`SMS failed: ${text}`);
+    }
+  },
+}),
+```
+
+### Brute Force Protection
+- After 3 failed attempts, OTP is invalidated (returns 403)
+- User must request a new code
+- Built-in, no configuration needed
 
 ---
 
