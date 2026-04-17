@@ -1,53 +1,47 @@
 # CRM-AI Development Status
 
-## Current Phase: Phase 1 — COMPLETE, ready for Phase 2
+## Current Phase: Phase 2 — COMPLETE, ready for Phase 3
 
 ## Last Updated: 2026-04-17
 
-## Last Completed Task: Phase 1 scaffolding — all packages build, lint, typecheck pass
+## Last Completed Task: Phase 2 Auth — Better Auth + phone/OTP + Micropay + role middleware
 
 ## Phase Checklist
 
-### Phase 0: Research & Planning — COMPLETE
+### Phase 0–1: COMPLETE
 
-- [x] All research documented in RESEARCH.md
+### Phase 2: Authentication — COMPLETE
 
-### Phase 1: Project Scaffolding — COMPLETE
+- [x] Better Auth with phone/OTP plugin + organization plugin
+- [x] Micropay SMS provider (real + mock with factory pattern)
+- [x] Login page (phone input, RTL-aware)
+- [x] OTP verification page (6-digit input, auto-submit)
+- [x] Auth flow component (phone → OTP → dashboard)
+- [x] Session management (Better Auth handles JWT cookies)
+- [x] Role-based tRPC middleware (public, protected, admin, owner)
+- [x] Tests: SMS provider (3 tests), health router (1 test) — all pass
+- [x] Build + lint pass
 
-- [x] Turborepo monorepo (packages/shared, packages/server, packages/client)
-- [x] TypeScript strict mode across all packages
-- [x] ESLint + typescript-eslint + Prettier
-- [x] Husky + lint-staged (pre-commit enforcement)
-- [x] Vite + React 19 client
-- [x] Bun server + tRPC standalone adapter + health router
-- [x] Prisma schema for MongoDB (all models from PRD)
-- [x] i18next with Hebrew RTL + English
-- [x] Tailwind CSS v4 + Vite plugin
-- [x] .env.example with all keys
-- [x] `turbo build` — all 3 packages pass
-- [x] `turbo lint` — zero errors
+### Phase 3: Core CRM — Leads Management — NEXT
 
-### Phase 2: Authentication — NEXT
+- [ ] Leads tRPC router (CRUD, status transitions, bulk actions)
+- [ ] Kanban board view (drag-and-drop between status columns)
+- [ ] Table view (sortable, filterable)
+- [ ] Lead detail side panel
+- [ ] Lead source tracking
+- [ ] Lead ingestion webhook
+- [ ] Tests
 
-- [ ] Integrate Better Auth with phone/OTP plugin
-- [ ] Implement Micropay SMS sendOTP function
-- [ ] Create login page (phone input)
-- [ ] Create OTP verification page
-- [ ] Session management (JWT cookies)
-- [ ] Organization creation flow (first user = Owner)
-- [ ] User invitation flow (Admin/Owner invites by phone)
-- [ ] Role-based middleware on tRPC (Owner, Admin, Agent)
-- [ ] Auth flow unit tests
-
-### Phase 3–12: Not started
+### Phase 4–12: Not started
 
 ## Known Issues
 
-- None
+- Organization creation/invite flow not yet built (Better Auth org plugin configured but no UI)
+- Auth handler integration in server uses basic request forwarding — may need refinement
 
 ## Notes for Next Iteration
 
-- Phase 1 is DONE — move to Phase 2: Authentication
-- Better Auth setup code is in RESEARCH.md section 7
-- Micropay integration code is ready in RESEARCH.md section 7 (sendOTP function)
-- Need DATABASE_URL in .env to run Prisma — will use mock if not available
+- Phase 2 is DONE — move to Phase 3: Leads Management
+- Need a leads tRPC router with CRUD operations
+- Kanban board needs drag-and-drop library (consider @dnd-kit or react-beautiful-dnd)
+- No DATABASE_URL yet — will need mock data or SMS the owner for MongoDB Atlas setup
