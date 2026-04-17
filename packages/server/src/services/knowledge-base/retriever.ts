@@ -60,7 +60,7 @@ export async function retrieveChunks(
       position: chunk.position,
     }))
     .filter((r: { score: number }) => r.score >= minScore)
-    .sort((a, b) => b.score - a.score)
+    .sort((a: { score: number }, b: { score: number }) => b.score - a.score)
     .slice(0, topK);
 
   const duration = performance.now() - start;
