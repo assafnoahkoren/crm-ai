@@ -19,4 +19,4 @@ dist/
 Thumbs.db
 
 # Ralph Loop state
-.claude/
+.claude/tests/manual/screenshots/
